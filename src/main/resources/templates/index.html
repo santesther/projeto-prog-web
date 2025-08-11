@@ -1,11 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu primeiro App</title>
+    <title>Sistema de Trilhas e Acampamentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Funcionando!</h1>
+    <div th:replace="~{fragments/header :: user-header}"></div>
+
+    <div class="container mt-4">
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <h1 class="display-4">Sistema de Trilhas e Acampamentos</h1>
+            <p class="lead">Descubra e compartilhe as melhores trilhas e locais para acampamento.</p>
+            <hr class="my-4">
+            <p>Cadastre trilhas, avalie experiências e conecte-se com outros aventureiros.</p>
+            <div th:unless="${userSession.logado}">
+                <a class="btn btn-primary btn-lg me-2" href="/usuarios/cadastro">Cadastre-se</a>
+                <a class="btn btn-outline-primary btn-lg" href="/usuarios/login">Fazer Login</a>
+            </div>
+        </div>
+
+        <div th:if="${mensagem}" class="alert alert-success" role="alert">
+            <span th:text="${mensagem}"></span>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Trilhas Cadastradas</h5>
+                        <h2 class="text-primary" th:text="${totalTrilhas ?: 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Usuários Ativos</h5>
+                        <h2 class="text-success">3</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Avaliações</h5>
+                        <h2 class="text-info">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h3>Trilhas Recentes</h3>
+                <div th:if="${trilhas.empty}" class="alert alert-info">
+                    <p>Nenhuma trilha cadastrada ainda. Seja o primeiro a compartilhar uma trilha!</p>
+                </div>
+                
+                <div th:unless="${trilhas.empty}">
+                    <div th:each="trilha : ${trilhas}" class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${trilha.nome}">Nome da Trilha</h5>
+                            <p class="card-text" th:text="${#strings.abbreviate(trilha.descricao, 150)}">Descrição...</p>
+                            <p class="text-muted">
+                                <strong>Local:</strong> <span th:text="${trilha.localizacao}">Localização</span> |
+                                <strong>Dificuldade:</strong> <span th:text="${trilha.dificuldade}">Dificuldade</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="/trilhas" class="btn btn-outline-primary">Ver Todas as Trilhas</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Cadastrar Nova Trilha</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/principal/cadastrar" method="post">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome da Trilha</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="localizacao" class="form-label">Localização</label>
+                                <input type="text" class="form-control" id="localizacao" name="localizacao" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dificuldade" class="form-label">Dificuldade</label>
+                                <select class="form-select" id="dificuldade" name="dificuldade" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="FACIL">Fácil</option>
+                                    <option value="MODERADA">Moderada</option>
+                                    <option value="DIFICIL">Difícil</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Cadastrar Trilha</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

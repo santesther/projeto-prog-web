@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Início - Sistema de Trilhas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: user-header}"></div>
+
+    <div class="container mt-4">
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <h1 class="display-4">Bem-vindo ao Sistema de Trilhas</h1>
+            <p class="lead">Descubra e compartilhe as melhores trilhas e locais para acampamento.</p>
+            <hr class="my-4">
+            <div th:if="${userSession.logado}">
+                <p>Olá, <strong th:text="${userSession.usuarioLogado.nome}"></strong>!</p>
+                <a class="btn btn-primary btn-lg me-2" href="/trilhas">Ver Trilhas</a>
+                <a class="btn btn-outline-primary btn-lg" th:if="${userSession.podeGerenciar}" href="/trilhas/nova">Nova Trilha</a>
+            </div>
+            <div th:unless="${userSession.logado}">
+                <p>Faça login para acessar todas as funcionalidades.</p>
+                <a class="btn btn-primary btn-lg me-2" href="/usuarios/cadastro">Cadastre-se</a>
+                <a class="btn btn-outline-primary btn-lg" href="/usuarios/login">Fazer Login</a>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Trilhas</h5>
+                        <h2 class="text-primary" th:text="${totalTrilhas}">0</h2>
+                        <p class="card-text">Trilhas cadastradas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Usuários</h5>
+                        <h2 class="text-success" th:text="${totalUsuarios}">0</h2>
+                        <p class="card-text">Usuários registrados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Avaliações</h5>
+                        <h2 class="text-info" th:text="${totalAvaliacoes}">0</h2>
+                        <p class="card-text">Avaliações feitas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h3>Funcionalidades</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Explorar Trilhas</h5>
+                                <p class="card-text">Descubra trilhas incríveis cadastradas pela comunidade.</p>
+                                <a href="/trilhas" class="btn btn-primary">Ver Trilhas</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3" th:if="${userSession.podeGerenciar}">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Cadastrar Trilha</h5>
+                                <p class="card-text">Compartilhe suas trilhas favoritas com a comunidade.</p>
+                                <a href="/trilhas/nova" class="btn btn-success">Nova Trilha</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

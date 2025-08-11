@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Avaliar Trilha</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: user-header}"></div>
+
+    <div class="container mt-4">
+        <h1 class="mb-4">Avaliar Trilha</h1>
+
+        <div th:if="${erro}" class="alert alert-danger" role="alert">
+            <span th:text="${erro}"></span>
+        </div>
+
+        <form th:action="@{/avaliacoes/trilha/{id}/nova(id=${trilhaId})}" method="post" class="card p-4 mx-auto" style="max-width: 500px;">
+            <div class="mb-3">
+                <label for="nota" class="form-label">Nota (1 a 5):</label>
+                <select id="nota" name="nota" class="form-select" required>
+                    <option value="">Selecione uma nota...</option>
+                    <option value="1">1 - Muito Ruim</option>
+                    <option value="2">2 - Ruim</option>
+                    <option value="3">3 - Regular</option>
+                    <option value="4">4 - Bom</option>
+                    <option value="5">5 - Excelente</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Comentário (opcional):</label>
+                <textarea id="comentario" name="comentario" rows="4" class="form-control" 
+                          placeholder="Compartilhe sua experiência nesta trilha..."></textarea>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success me-2">Salvar Avaliação</button>
+                <a th:href="@{/trilhas/{id}(id=${trilhaId})}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

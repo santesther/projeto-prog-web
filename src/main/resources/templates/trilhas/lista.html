@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Trilhas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: user-header}"></div>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 th:text="${viewMode == 'mine'} ? 'Minhas Trilhas' : 'Todas as Trilhas'">Lista de Trilhas</h1>
+            <div>
+                <a th:if="${userSession.podeGerenciar}" href="/trilhas/nova" class="btn btn-success">Nova Trilha</a>
+            </div>
+        </div>
+
+        <div th:if="${mensagem}" class="alert alert-success" role="alert">
+            <span th:text="${mensagem}"></span>
+        </div>
+
+        <div th:if="${erro}" class="alert alert-danger" role="alert">
+            <span th:text="${erro}"></span>
+        </div>
+
+        <div th:if="${trilhas.empty}" class="alert alert-info">
+            <p th:text="${viewMode == 'mine'} ? 'Você ainda não cadastrou nenhuma trilha.' : 'Nenhuma trilha cadastrada ainda.'"></p>
+            <a th:if="${userSession.podeGerenciar}" href="/trilhas/nova" class="btn btn-primary">Cadastrar Primeira Trilha</a>
+        </div>
+
+        <div th:unless="${trilhas.empty}">
+            <div class="row">
+                <div th:each="trilha : ${trilhas}" class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${trilha.nome}">Nome da Trilha</h5>
+                            <p class="card-text" th:text="${#strings.abbreviate(trilha.descricao, 100)}">Descrição da trilha...</p>
+                            <p class="text-muted mb-1">
+                                <strong>Local:</strong> <span th:text="${trilha.localizacao}">Localização</span>
+                            </p>
+                            <p class="text-muted mb-1">
+                                <strong>Dificuldade:</strong> 
+                                <span class="badge" 
+                                      th:classappend="${trilha.dificuldade.name() == 'FACIL'} ? 'bg-success' : (${trilha.dificuldade.name() == 'MODERADA'} ? 'bg-warning' : 'bg-danger')"
+                                      th:text="${#messages.msg('dificuldade.' + trilha.dificuldade.name())}">Dificuldade</span>
+                            </p>
+                            <p class="text-muted mb-3">
+                                <strong>Autor:</strong> <span th:text="${trilha.autorNome}">Autor</span>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a th:href="@{/trilhas/{id}(id=${trilha.id})}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                            <a th:if="${userSession.logado and (userSession.admin or trilha.autorId == userSession.usuarioLogado.id)}" 
+                               th:href="@{/trilhas/{id}/editar(id=${trilha.id})}" 
+                               class="btn btn-outline-secondary btn-sm">Editar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
