@@ -18,9 +18,14 @@ public class TrilhaController {
     @GetMapping
     public String listTrilhas(Model model) {
         model.addAttribute("trilhas", trilhaService.findAll());
+        return "trilhas/lista";
+    }
+
+    @GetMapping("/cadastro")
+    public String showCadastroForm(Model model) {
         model.addAttribute("trilha", new Trilha());
         model.addAttribute("dificuldades", NivelDificuldade.values());
-        return "trilhas/lista";
+        return "trilhas/cadastro";
     }
 
     @PostMapping

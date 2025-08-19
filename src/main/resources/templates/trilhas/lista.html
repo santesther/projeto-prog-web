@@ -1,84 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Lista de Trilhas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="/trilhas">Sistema de Trilhas</a>
+  <head>
+    <meta charset="UTF-8" />
+    <title>TrailBlaze - Lista de Trilhas</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+
+    <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+      <div class="flex items-center gap-3 text-[#181311]">
+        <div class="size-5">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+              fill="currentColor"
+            ></path>
+          </svg>
         </div>
-    </nav>
+        <h2 class="text-lg font-bold">TrailBlaze</h2>
+      </div>
+      <div class="flex gap-6">
+        <a class="text-sm font-medium" href="/trilhas">Trilhas</a>
+        <a class="text-sm font-medium" href="#cadastro">Cadastro</a>
+      </div>
+    </header>
 
-    <div class="container mt-4">
-        <h1>Lista de Trilhas</h1>
+    <main class="px-8 md:px-40 py-6">
+      <div class="max-w-[960px] mx-auto">
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Cadastrar Nova Trilha</h5>
+        <h1 class="text-[32px] font-bold text-center pb-3 pt-6">Descubra sua próxima aventura em trilhas</h1>
+        <p class="text-base text-center text-[#181311] pb-6">
+          Explore uma seleção de trilhas de corrida, de montanhas cênicas a cursos desafiadores. Encontre sua trilha perfeita e cadastre-se.
+        </p>
+
+        <h2 class="text-[22px] font-bold pb-4">Trilhas em Destaque</h2>
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
+
+          <div th:each="trilha : ${trilhas}" class="flex flex-col gap-2 rounded-xl border border-[#e6dedb] bg-white p-4 shadow-sm">
+            <div class="text-[#181311]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M230.32,187.09l-46-59.09H208a8,8,0,0,0,6.34-12.88l-80-104a8,8,0,0,0-12.68,0l-80,104A8,8,0,0,0,48,128H71.64l-46,59.09A8,8,0,0,0,32,200h88v40a8,8,0,0,0,16,0V200h88a8,8,0,0,0,6.32-12.91ZM48.36,184l46-59.09A8,8,0,0,0,88,112H64.25L128,29.12,191.75,112H168a8,8,0,0,0-6.31,12.91L207.64,184Z"
+                ></path>
+              </svg>
             </div>
-            <div class="card-body">
-                <form th:action="@{/trilhas}" method="post">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="nome" class="form-label">Nome da Trilha</label>
-                            <input type="text" class="form-control" id="nome" name="nome" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="localizacao" class="form-label">Localização</label>
-                            <input type="text" class="form-control" id="localizacao" name="localizacao" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="dificuldade" class="form-label">Dificuldade</label>
-                            <select class="form-select" id="dificuldade" name="dificuldade" required>
-                                <option th:each="dif : ${dificuldades}" 
-                                        th:value="${dif}" 
-                                        th:text="${dif.name()}">Dificuldade</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="descricao" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="descricao" name="descricao" rows="2" required></textarea>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-success">Cadastrar Trilha</button>
-                </form>
-            </div>
+            <h3 class="text-lg font-bold text-[#181311]" th:text="${trilha.nome}">Nome da Trilha</h3>
+            <p class="text-sm text-[#896b61]" th:text="${trilha.descricao}">Descrição da trilha...</p>
+            <p class="text-sm text-gray-500">
+              <strong>Local:</strong> <span th:text="${trilha.localizacao}">Localização</span>
+            </p>
+            <p class="text-sm text-gray-500">
+              <strong>Dificuldade:</strong>
+              <span th:text="${trilha.dificuldade.name()}">Dificuldade</span>
+            </p>
+            <p class="text-sm text-gray-500">
+              <strong>Autor:</strong> <span th:text="${trilha.autorNome}">Autor</span>
+            </p>
+          </div>
+
         </div>
 
-        <div class="row">
-            <div th:each="trilha : ${trilhas}" class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${trilha.nome}">Nome da Trilha</h5>
-                        <p class="card-text" th:text="${trilha.descricao}">Descrição da trilha...</p>
-                        <p class="text-muted mb-1">
-                            <strong>Local:</strong> <span th:text="${trilha.localizacao}">Localização</span>
-                        </p>
-                        <p class="text-muted mb-1">
-                            <strong>Dificuldade:</strong> 
-                            <span class="badge" 
-                                  th:classappend="${trilha.dificuldade.name() == 'FACIL'} ? 'bg-success' : 
-                                                 (${trilha.dificuldade.name() == 'MODERADA'} ? 'bg-warning' : 'bg-danger')"
-                                  th:text="${trilha.dificuldade.name()}">Dificuldade</span>
-                        </p>
-                        <p class="text-muted mb-3">
-                            <strong>Autor:</strong> <span th:text="${trilha.autorNome}">Autor</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <div th:if="${#lists.isEmpty(trilhas)}" class="text-center mt-10">
+          <h4 class="text-lg font-bold">Nenhuma trilha cadastrada</h4>
+          <p class="text-gray-500">Os dados mockados do service serão exibidos aqui.</p>
         </div>
+      </div>
+    </main>
 
-        <div th:if="${#lists.isEmpty(trilhas)}" class="text-center mt-5">
-            <h4>Nenhuma trilha cadastrada</h4>
-            <p class="text-muted">Os dados mockados do service serão exibidos aqui.</p>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>
