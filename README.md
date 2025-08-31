@@ -23,14 +23,15 @@ Este sistema tem como objetivo conectar trilheiros experientes com entusiastas d
 ## 🔧 Como Executar o Projeto
 
 ### 1. Clone o repositório
-\`\`\`bash
+
 git clone https://github.com/santesther/projeto-prog-web.git
+
 cd projetoprogweb
-\`\`\`
+
 
 ### 2. Compile e execute o projeto
-\`\`\`bash
 # Via Maven
+
 mvn spring-boot:run
 
 ### 3. Acesse a aplicação
@@ -68,5 +69,7 @@ mvn spring-boot:run
 Este projeto é desenvolvido para fins acadêmicos na disciplina de Programação Web do IFF.
 
 **Desenvolvido por:** Esther Sant'Ana Gomes 
-**Instituição:** Instituto Federal Fluminense (IFF)  
+
+**Instituição:** Instituto Federal Fluminense (IFF) 
+
 **Disciplina:** Programação Web
