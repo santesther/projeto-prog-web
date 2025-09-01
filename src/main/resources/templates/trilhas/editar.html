@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    
+    <main class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-edit"></i> Editar Trilha</h3>
+                        <h5 class="text-muted mb-0" th:text="${trilha.nome}">Nome da Trilha</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{'/trilhas/' + ${trilha.id} + '/editar'}" method="post" th:object="${trilha}">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome" class="form-label">Nome da Trilha *</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" 
+                                           th:value="*{nome}" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="localizacao" class="form-label">Localização *</label>
+                                    <input type="text" class="form-control" id="localizacao" name="localizacao" 
+                                           th:value="*{localizacao}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="dificuldade" class="form-label">Dificuldade *</label>
+                                    <select class="form-select" id="dificuldade" name="dificuldade" required>
+                                        <option th:each="dif : ${dificuldades}"
+                                                th:value="${dif}"
+                                                th:text="${dif.name()}"
+                                                th:selected="*{dificuldade} == ${dif}">Dificuldade</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="distancia" class="form-label">Distância (km)</label>
+                                    <input type="number" class="form-control" id="distancia" name="distancia" 
+                                           th:value="*{distancia}" step="0.1" min="0">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="duracaoEstimada" class="form-label">Duração (horas)</label>
+                                    <input type="number" class="form-control" id="duracaoEstimada" name="duracaoEstimada" 
+                                           th:value="*{duracaoEstimada}" step="0.5" min="0">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label">Descrição *</label>
+                                <textarea class="form-control" id="descricao" name="descricao" rows="4" 
+                                          required th:text="*{descricao}"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="dicasSeguranca" class="form-label">Dicas de Segurança</label>
+                                <textarea class="form-control" id="dicasSeguranca" name="dicasSeguranca" rows="3"
+                                          th:text="*{dicasSeguranca}"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="melhorEpoca" class="form-label">Melhor Época para Visitar</label>
+                                <input type="text" class="form-control" id="melhorEpoca" name="melhorEpoca"
+                                       th:value="*{melhorEpoca}">
+                            </div>
+                            
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Salvar Alterações
+                                </button>
+                                <a th:href="@{'/trilhas/' + ${trilha.id}}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                                <button type="button" class="btn btn-outline-danger ms-auto" 
+                                        th:onclick="'confirmarExclusao(' + ${trilha.id} + ')'">
+                                    <i class="fas fa-trash"></i> Excluir Trilha
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+    
+    <script>
+        function confirmarExclusao(trilhaId) {
+            if (confirm('Tem certeza que deseja excluir esta trilha? Esta ação não pode ser desfeita.')) {
+                fetch(`/trilhas/${trilhaId}/excluir`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/trilhas';
+                    } else {
+                        alert('Erro ao excluir trilha');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao excluir trilha');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

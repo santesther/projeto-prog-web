@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Detalhes da Trilha')}"></head>
+<body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+
+  <!-- Header -->
+  <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+    <div class="flex items-center gap-3 text-[#181311]">
+      <div class="size-5">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">Guia de Trilhas</h2>
+    </div>
+    <div class="flex gap-6">
+      <a class="text-sm font-medium" href="/trilhas">Trilhas</a>
+      <a class="text-sm font-medium" href="/trilhas/cadastro">Cadastrar</a>
+      <a class="text-sm font-bold text-green-600" href="/trilhas/favoritas">Favoritas</a>
+    </div>
+  </header>
+
+  <main class="px-6 md:px-20 py-6 max-w-7xl mx-auto">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm text-gray-600">
+      <ol class="flex space-x-2">
+        <li><a href="/home" class="hover:underline">Início</a> <span>/</span></li>
+        <li><a href="/trilhas" class="hover:underline">Trilhas</a> <span>/</span></li>
+        <li class="font-medium text-gray-900" th:text="${trilha.nome}">Trilha Atual</li>
+      </ol>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Conteúdo Principal -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Card da Trilha -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <img th:src="@{'/placeholder.svg?height=400&width=800&query=' + ${trilha.nome}}" 
+               class="w-full h-64 object-cover rounded-lg mb-4" 
+               th:alt="${trilha.nome}">
+          
+          <div class="flex justify-between items-start mb-4">
+            <h1 class="text-2xl font-bold" th:text="${trilha.nome}">Nome da Trilha</h1>
+            <div class="flex gap-2">
+              <a th:href="@{'/trilhas/' + ${trilha.id} + '/editar'}"
+                 class="px-3 py-2 border border-blue-500 text-blue-600 rounded-lg hover:bg-blue-50">
+                <i class="fas fa-edit"></i> Editar
+              </a>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 text-gray-700">
+            <div>
+              <p><strong><i class="fas fa-map-marker-alt"></i> Localização:</strong> 
+                <span th:text="${trilha.localizacao}">Localização</span></p>
+              <p><strong><i class="fas fa-signal"></i> Dificuldade:</strong> 
+                <span class="px-2 py-1 rounded text-white text-xs font-semibold"
+                      th:classappend="${trilha.dificuldade.name() == 'FACIL' ? 'bg-green-500' : 
+                                      (trilha.dificuldade.name() == 'MODERADA' ? 'bg-yellow-500' : 'bg-red-500')}"
+                      th:text="${trilha.dificuldade.name()}">Dificuldade</span></p>
+            </div>
+            <div>
+              <p><strong><i class="fas fa-route"></i> Distância:</strong> 
+                <span th:text="${trilha.distancia != null ? trilha.distancia + ' km' : 'Não informado'}">5.2 km</span></p>
+              <p><strong><i class="fas fa-clock"></i> Duração:</strong> 
+                <span th:text="${trilha.duracaoEstimada != null ? trilha.duracaoEstimada + ' horas' : 'Não informado'}">3 horas</span></p>
+            </div>
+          </div>
+
+          <!-- Avaliações médias -->
+          <div class="flex items-center mt-4 text-yellow-500">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="far fa-star"></i>
+            <span class="ml-2 text-gray-800" th:text="${mediaAvaliacoes != null ? mediaAvaliacoes : '4.2'}">4.2</span>
+            <small class="ml-2 text-gray-500">
+              (<span th:text="${avaliacoes != null ? #lists.size(avaliacoes) : '15'}">15</span> avaliações)
+            </small>
+          </div>
+
+          <h3 class="mt-6 text-xl font-semibold">Descrição</h3>
+          <p class="text-gray-700" th:text="${trilha.descricao}">Descrição detalhada da trilha...</p>
+
+          <div th:if="${trilha.dicasSeguranca}" class="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+            <h5 class="font-bold text-yellow-700"><i class="fas fa-exclamation-triangle"></i> Dicas de Segurança</h5>
+            <p th:text="${trilha.dicasSeguranca}">Dicas importantes de segurança...</p>
+          </div>
+
+          <div th:if="${trilha.melhorEpoca}" class="mt-4 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+            <h5 class="font-bold text-blue-700"><i class="fas fa-calendar"></i> Melhor Época para Visitar</h5>
+            <p th:text="${trilha.melhorEpoca}">Informações sobre a melhor época...</p>
+          </div>
+        </div>
+
+        <!-- Avaliações -->
+        <div class="bg-white rounded-xl shadow">
+          <div class="flex justify-between items-center border-b px-6 py-4">
+            <h3 class="text-lg font-bold">Avaliações</h3>
+            <a th:href="@{'/avaliacoes/trilha/' + ${trilha.id} + '/nova'}" 
+               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              <i class="fas fa-plus"></i> Avaliar Trilha
+            </a>
+          </div>
+          <div class="p-6 space-y-6">
+            <div class="space-y-4" th:each="avaliacao, avaliacaoStat : ${avaliacoes}">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h6 class="font-semibold" th:text="${avaliacao.usuarioNome ?: 'Usuário Anônimo'}">Usuário Exemplo</h6>
+                  <div class="text-yellow-500">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                      <i th:class="${i <= (avaliacao.nota ?: 4) ? 'fas fa-star' : 'far fa-star'}"></i>
+                    </span>
+                  </div>
+                </div>
+                <small class="text-gray-500" th:text="${avaliacao.dataAvaliacao ?: 'há 2 dias'}">há 2 dias</small>
+              </div>
+              <p th:text="${avaliacao.comentario ?: 'Trilha incrível! Vista espetacular e bem sinalizada. Recomendo levar bastante água.'}">Comentário da avaliação</p>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 border border-blue-500 text-blue-500 rounded-lg text-sm hover:bg-blue-50"
+                        th:data-avaliacao-id="${avaliacao.id}"
+                        onclick="toggleCurtida(this.dataset.avaliacaoId)">
+                  <i class="fas fa-thumbs-up"></i> Útil (0)
+                </button>
+                <button class="px-3 py-1 border border-gray-400 text-gray-600 rounded-lg text-sm hover:bg-gray-100">
+                  <i class="fas fa-reply"></i> Responder
+                </button>
+              </div>
+              <hr th:unless="${avaliacaoStat.last}">
+            </div>
+
+            <div class="text-center">
+              <a th:href="@{'/avaliacoes/trilha/' + ${trilha.id}}"
+                 class="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
+                Ver Todas as Avaliações
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Informações rápidas -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <h5 class="font-semibold mb-4"><i class="fas fa-info-circle"></i> Informações Rápidas</h5>
+          <ul class="space-y-2 text-gray-700">
+            <li><i class="fas fa-user text-gray-400"></i> <strong>Cadastrada por:</strong> Trilheiro Experiente</li>
+            <li><i class="fas fa-calendar text-gray-400"></i> <strong>Data:</strong> 15/03/2024</li>
+            <li><i class="fas fa-eye text-gray-400"></i> <strong>Visualizações:</strong> 1,247</li>
+            <li><i class="fas fa-heart text-gray-400"></i> <strong>Favoritos:</strong> 89</li>
+          </ul>
+        </div>
+
+        <!-- Trilhas Similares -->
+        <div class="bg-white rounded-xl shadow p-6">
+          <h5 class="font-semibold mb-4"><i class="fas fa-route"></i> Trilhas Similares</h5>
+          <div class="space-y-3">
+            <div>
+              <h6><a href="#" class="hover:underline">Cachoeira dos Cristais</a></h6>
+              <small class="text-gray-500">Moderada • 4.1 ⭐</small>
+            </div>
+            <div>
+              <h6><a href="#" class="hover:underline">Pico da Águia</a></h6>
+              <small class="text-gray-500">Difícil • 4.5 ⭐</small>
+            </div>
+            <div>
+              <h6><a href="#" class="hover:underline">Trilha do Mirante</a></h6>
+              <small class="text-gray-500">Moderada • 4.3 ⭐</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer th:replace="~{fragments/layout :: footer}"></footer>
+  <div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Avaliar Trilha')}"></head>
+<body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+
+  <!-- Header -->
+  <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+    <div class="flex items-center gap-3 text-[#181311]">
+      <div class="size-5">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+                fill="currentColor"></path>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">Guia de Trilhas</h2>
+    </div>
+    <div class="flex gap-6">
+      <a class="text-sm font-medium" href="/trilhas">Trilhas</a>
+      <a class="text-sm font-medium" href="/trilhas/cadastro">Cadastrar</a>
+      <a class="text-sm font-medium" href="/trilhas/favoritas">Favoritas</a>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="px-8 md:px-40 py-6">
+    <div class="max-w-[720px] mx-auto">
+
+      <!-- Card principal -->
+      <div class="rounded-xl border border-gray-200 bg-white shadow-sm p-6">
+        
+        <!-- Título -->
+        <h1 class="text-xl font-bold flex items-center gap-2 mb-6">
+          <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.05 3.234a1 1 0 00.95.69h3.398c.969 0 1.371 1.24.588 1.81l-2.75 2a1 1 0 00-.364 1.118l1.05 3.234c.3.921-.755 1.688-1.54 1.118l-2.75-2a1 1 0 00-1.176 0l-2.75 2c-.784.57-1.838-.197-1.539-1.118l1.05-3.234a1 1 0 00-.364-1.118l-2.75-2c-.783-.57-.38-1.81.588-1.81h3.398a1 1 0 00.95-.69l1.05-3.234z"/>
+          </svg>
+          Avaliar Trilha: <span th:text="${trilha.nome}"></span>
+        </h1>
+
+        <!-- Informações da trilha -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h2 class="text-sm font-semibold text-gray-500 mb-2">Informações da Trilha</h2>
+          <p class="text-sm text-gray-700"><strong>Dificuldade:</strong> <span th:text="${trilha.dificuldade}"></span></p>
+          <p class="text-sm text-gray-700"><strong>Distância:</strong> <span th:text="${trilha.distancia}"></span> km</p>
+          <p class="text-sm text-gray-700"><strong>Duração:</strong> <span th:text="${trilha.duracaoEstimada}"></span> min</p>
+        </div>
+
+        <!-- Erro -->
+        <div th:if="${erro}" class="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-red-700 text-sm flex items-center gap-2">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zm.75 7.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+          </svg>
+          <span th:text="${erro}"></span>
+        </div>
+
+        <!-- Formulário -->
+        <form th:action="@{/avaliacoes/trilha/{trilhaId}/nova(trilhaId=${trilha.id})}" method="post" class="space-y-5">
+
+          <!-- Nota -->
+          <div>
+            <label for="nota" class="block font-medium text-gray-700 mb-2">
+              Nota (1 a 5 estrelas) <span class="text-red-500">*</span>
+            </label>
+            <div class="star-rating mb-1">
+              <input type="radio" id="star5" name="nota" value="5" required><label for="star5">★</label>
+              <input type="radio" id="star4" name="nota" value="4" required><label for="star4">★</label>
+              <input type="radio" id="star3" name="nota" value="3" required><label for="star3">★</label>
+              <input type="radio" id="star2" name="nota" value="2" required><label for="star2">★</label>
+              <input type="radio" id="star1" name="nota" value="1" required><label for="star1">★</label>
+            </div>
+            <p class="text-xs text-gray-500">Clique nas estrelas para avaliar</p>
+          </div>
+
+          <!-- Comentário -->
+          <div>
+            <label for="comentario" class="block font-medium text-gray-700 mb-2">Comentário (opcional)</label>
+            <textarea id="comentario" name="comentario" rows="4" placeholder="Compartilhe sua experiência nesta trilha..."
+                      class="w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+            <p class="text-xs text-gray-500 mt-1">Descreva sua experiência, dicas ou observações sobre a trilha</p>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex justify-between pt-2">
+            <a th:href="@{/trilhas/{id}(id=${trilha.id})}"
+               class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 text-sm">
+              ← Voltar
+            </a>
+            <button type="submit" 
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 text-sm">
+              Enviar Avaliação
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- CSS para o sistema de estrelas -->
+  <style>
+    .star-rating {
+      direction: rtl;
+      display: inline-block;
+    }
+    .star-rating input[type="radio"] {
+      display: none;
+    }
+    .star-rating label {
+      color: #ddd;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input[type="radio"]:checked ~ label {
+      color: #fbbf24; /* amarelo Tailwind */
+    }
+  </style>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Avaliações da Trilha')}"></head>
+<body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+
+  <!-- Header -->
+  <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+    <div class="flex items-center gap-3 text-[#181311]">
+      <div class="size-5">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+            fill="currentColor"></path>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">Guia de Trilhas</h2>
+    </div>
+    <div class="flex gap-6">
+      <a class="text-sm font-medium" href="/trilhas">Trilhas</a>
+      <a class="text-sm font-medium" href="/trilhas/cadastro">Cadastrar</a>
+      <a class="text-sm font-medium" href="/trilhas/favoritas">Favoritas</a>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="px-8 md:px-40 py-6">
+    <div class="max-w-[960px] mx-auto">
+
+      <!-- Cabeçalho da página -->
+      <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+        <h1 class="text-2xl font-bold flex items-center gap-2">
+          <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 8a6 6 0 11-11.473 2.43l-3.72 1.86a.75.75 0 01-1.094-.866l1.5-6A.75.75 0 015.93 4h8.12A6 6 0 0118 8z"/>
+          </svg>
+          Avaliações: <span th:text="${trilha.nome}"></span>
+        </h1>
+        <div class="text-right">
+          <div class="mb-1">
+            <span class="inline-flex items-center px-2 py-1 rounded-md bg-yellow-100 text-yellow-700 text-sm font-medium">
+              ⭐ <span class="ml-1" th:text="${#numbers.formatDecimal(mediaAvaliacoes, 1, 1)}"></span>
+            </span>
+          </div>
+          <small class="text-gray-500">
+            <span th:text="${#lists.size(avaliacoes)}"></span> avaliação(ões)
+          </small>
+        </div>
+      </div>
+
+      <!-- Botões principais -->
+      <div class="flex gap-2 mb-6">
+        <a th:href="@{/avaliacoes/trilha/{trilhaId}/nova(trilhaId=${trilha.id})}" 
+           class="px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 text-sm">
+          + Nova Avaliação
+        </a>
+        <a th:href="@{/trilhas/{id}(id=${trilha.id})}" 
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 text-sm">
+          ← Voltar à Trilha
+        </a>
+      </div>
+
+      <!-- Sem avaliações -->
+      <div th:if="${#lists.isEmpty(avaliacoes)}" 
+           class="text-center py-10 bg-gray-50 rounded-xl border border-gray-200">
+        <svg class="w-10 h-10 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" 
+                d="M17 8h2a2 2 0 012 2v9a2 2 0 01-2 2h-2m-6-2h6m-6 0H7a2 2 0 01-2-2v-9a2 2 0 012-2h2m6 0V6a2 2 0 10-4 0v2m4 0H9"/>
+        </svg>
+        <h3 class="text-lg font-semibold text-gray-600">Nenhuma avaliação ainda</h3>
+        <p class="text-gray-500 mt-2">Seja o primeiro a avaliar esta trilha!</p>
+      </div>
+
+      <!-- Lista de avaliações -->
+      <div th:if="${not #lists.isEmpty(avaliacoes)}" class="space-y-4">
+        <div th:each="avaliacao : ${avaliacoes}" 
+             class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+          
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h4 class="font-semibold text-gray-800" th:text="${avaliacao.usuarioNome}"></h4>
+              <div class="flex items-center gap-1">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:class="${i <= avaliacao.nota} ? 'text-yellow-500' : 'text-gray-300'">★</span>
+                <span class="ml-2 text-sm text-gray-500">(<span th:text="${avaliacao.nota}"></span>/5)</span>
+              </div>
+            </div>
+            <small class="text-gray-400" 
+                   th:text="${#temporals.format(avaliacao.dataAvaliacao, 'dd/MM/yyyy HH:mm')}"></small>
+          </div>
+
+          <p th:if="${avaliacao.comentario != null and !avaliacao.comentario.isEmpty()}" 
+             class="text-gray-700 text-sm mb-3" th:text="${avaliacao.comentario}"></p>
+
+          <div class="flex gap-3">
+            <a th:href="@{/avaliacoes/{id}/editar(id=${avaliacao.id})}" 
+               class="text-blue-600 hover:text-blue-700 text-sm font-medium">Editar</a>
+            <form th:action="@{/avaliacoes/{id}/excluir(id=${avaliacao.id})}" method="post" 
+                  onsubmit="return confirm('Tem certeza que deseja excluir esta avaliação?')">
+              <button type="submit" 
+                      class="text-red-600 hover:text-red-700 text-sm font-medium">
+                Excluir
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

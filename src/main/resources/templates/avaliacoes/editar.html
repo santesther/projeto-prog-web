@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Editar Avaliação')}"></head>
+<body class="bg-white font-['Plus Jakarta Sans','Noto Sans',sans-serif]">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+    <div class="flex items-center gap-3 text-[#181311]">
+      <div class="size-5">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">Guia de Trilhas</h2>
+    </div>
+    <div class="flex gap-6">
+      <a class="text-sm font-medium hover:text-blue-600 transition" href="/trilhas">Trilhas</a>
+      <a class="text-sm font-medium hover:text-blue-600 transition" href="/trilhas/cadastro">Cadastrar</a>
+      <a class="text-sm font-medium hover:text-blue-600 transition" href="/trilhas/favoritas">Favoritas</a>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="px-8 md:px-40 py-6">
+    <div class="max-w-[960px] mx-auto">
+      <div class="mt-4 flex justify-center">
+        <div class="w-full md:w-2/3">
+          <div class="bg-white border rounded-lg shadow-md">
+            
+            <!-- Card Header -->
+            <div class="border-b px-4 py-3 bg-gray-50 rounded-t-lg">
+              <h4 class="text-lg font-semibold flex items-center gap-2">
+                <i class="fas fa-edit text-blue-600"></i>
+                Editar Avaliação
+              </h4>
+            </div>
+            
+            <!-- Card Body -->
+            <div class="p-6">
+              <!-- Mensagem de erro -->
+              <div th:if="${erro}" class="flex items-center gap-2 mb-4 p-3 border border-red-300 bg-red-100 text-red-700 rounded-md">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span th:text="${erro}"></span>
+              </div>
+
+              <!-- Formulário -->
+              <form th:action="@{/avaliacoes/{id}/editar(id=${avaliacao.id})}" method="post">
+                
+                <!-- Nota -->
+                <div class="mb-4">
+                  <label for="nota" class="block text-sm font-medium mb-1">
+                    <i class="fas fa-star text-yellow-500 mr-1"></i>
+                    Nota (1 a 5 estrelas) <span class="text-red-500">*</span>
+                  </label>
+                  <div class="rating-container">
+                    <div class="star-rating mb-2">
+                      <input type="radio" id="star5" name="nota" value="5" th:checked="${avaliacao.nota == 5}" required>
+                      <label for="star5" title="5 estrelas">★</label>
+                      <input type="radio" id="star4" name="nota" value="4" th:checked="${avaliacao.nota == 4}" required>
+                      <label for="star4" title="4 estrelas">★</label>
+                      <input type="radio" id="star3" name="nota" value="3" th:checked="${avaliacao.nota == 3}" required>
+                      <label for="star3" title="3 estrelas">★</label>
+                      <input type="radio" id="star2" name="nota" value="2" th:checked="${avaliacao.nota == 2}" required>
+                      <label for="star2" title="2 estrelas">★</label>
+                      <input type="radio" id="star1" name="nota" value="1" th:checked="${avaliacao.nota == 1}" required>
+                      <label for="star1" title="1 estrela">★</label>
+                    </div>
+                    <small class="text-gray-500 text-sm">Clique nas estrelas para alterar a nota</small>
+                  </div>
+                </div>
+
+                <!-- Comentário -->
+                <div class="mb-4">
+                  <label for="comentario" class="block text-sm font-medium mb-1">
+                    <i class="fas fa-comment mr-1"></i>
+                    Comentário (opcional)
+                  </label>
+                  <textarea id="comentario" name="comentario" rows="4"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                            th:text="${avaliacao.comentario}"
+                            placeholder="Compartilhe sua experiência nesta trilha..."></textarea>
+                  <small class="text-gray-500 text-sm">Descreva sua experiência, dicas ou observações sobre a trilha</small>
+                </div>
+
+                <!-- Ações -->
+                <div class="flex justify-between">
+                  <a th:href="@{/trilhas/{id}(id=${avaliacao.trilhaId})}" 
+                     class="inline-flex items-center gap-1 px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-gray-700 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    Cancelar
+                  </a>
+                  <button type="submit" 
+                          class="inline-flex items-center gap-1 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white shadow-md transition">
+                    <i class="fas fa-save"></i>
+                    Salvar Alterações
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CSS sistema de estrelas -->
+      <style>
+        .star-rating {
+          direction: rtl;
+          display: inline-block;
+        }
+        .star-rating input[type="radio"] {
+          display: none;
+        }
+        .star-rating label {
+          color: #ddd;
+          font-size: 2rem;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input[type="radio"]:checked ~ label {
+          color: #ffc107;
+        }
+        .rating-container {
+          text-align: left;
+        }
+      </style>
+    </div>
+  </main>
+</body>
+</html>

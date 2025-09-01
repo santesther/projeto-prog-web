@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<head th:replace="~{fragments/head :: head('Cadastro de Trilha')}"></head>
 <body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
   <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
     <div class="flex items-center gap-3 text-[#181311]">
@@ -12,11 +12,12 @@
           ></path>
         </svg>
       </div>
-      <h2 class="text-lg font-bold">TrailBlaze</h2>
+      <h2 class="text-lg font-bold">Guia de Trilhas</h2>
     </div>
     <div class="flex gap-6">
-      <a class="text-sm font-medium" href="/trilhas">Trilhas</a>
-      <a class="text-sm font-medium" href="/cadastro">Cadastro</a>
+      <a class="text-sm font-medium" href="../trilhas">Trilhas</a>
+      <a class="text-sm font-medium" href="../trilhas/cadastro">Cadastrar</a>
+      <a class="text-sm font-medium" href="../trilhas/favoritas">Favoritas</a>
     </div>
   </header>
 
@@ -25,37 +26,78 @@
 
       <section id="cadastro" class="bg-[#f9f9f9] rounded-xl p-6 mb-10 shadow">
         <h2 class="text-xl font-bold mb-4">Cadastrar Nova Trilha</h2>
-        <form th:action="@{/trilhas}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
+        <form th:action="@{/trilhas}" method="post" th:object="${trilha}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
           <div>
-            <label for="nome" class="block text-sm font-medium">Nome da Trilha</label>
-            <input type="text" id="nome" name="nome" required
-                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500" />
+              <label for="nome" class="block text-sm font-medium">Nome da Trilha *</label>
+              <input type="text" id="nome" th:field="*{nome}" required
+                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                     placeholder="Ex: Trilha da Pedra Bonita" />
+              <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-red-500 text-xs"></span>
+          </div>
+      
+          <div>
+              <label for="localizacao" class="block text-sm font-medium">Localização *</label>
+              <input type="text" id="localizacao" th:field="*{localizacao}" required
+                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                     placeholder="Ex: Rio de Janeiro, RJ" />
+              <span th:if="${#fields.hasErrors('localizacao')}" th:errors="*{localizacao}" class="text-red-500 text-xs"></span>
           </div>
 
           <div>
-            <label for="localizacao" class="block text-sm font-medium">Localização</label>
-            <input type="text" id="localizacao" name="localizacao" required
-                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500" />
-          </div>
-
-          <div>
-            <label for="dificuldade" class="block text-sm font-medium">Dificuldade</label>
-            <select id="dificuldade" name="dificuldade" required
+            <label for="dificuldade" class="block text-sm font-medium">Dificuldade *</label>
+            <select id="dificuldade" th:field="*{dificuldade}" required
                     class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500">
+              <option value="">Selecione a dificuldade</option>
               <option th:each="dif : ${dificuldades}"
                       th:value="${dif}"
                       th:text="${dif.name()}">Dificuldade</option>
             </select>
+            <span th:if="${#fields.hasErrors('dificuldade')}" th:errors="*{dificuldade}" class="text-red-500 text-xs"></span>
+          </div>
+
+          <div class="md:col-span-2">
+            <label for="descricao" class="block text-sm font-medium">Descrição *</label>
+            <textarea id="descricao" th:field="*{descricao}" rows="3" required
+                      class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                      placeholder="Descreva a trilha, pontos de interesse, características..."></textarea>
+            <span th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-red-500 text-xs"></span>
+          </div>
+
+          <!-- Campos opcionais -->
+          <div>
+            <label for="dicasSeguranca" class="block text-sm font-medium">Dicas de Segurança</label>
+            <textarea id="dicasSeguranca" th:field="*{dicasSeguranca}" rows="2"
+                      class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                      placeholder="Dicas importantes para segurança..."></textarea>
           </div>
 
           <div>
-            <label for="descricao" class="block text-sm font-medium">Descrição</label>
-            <textarea id="descricao" name="descricao" rows="2" required
-                      class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+            <label for="melhorEpoca" class="block text-sm font-medium">Melhor Época</label>
+            <input type="text" id="melhorEpoca" th:field="*{melhorEpoca}"
+                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                   placeholder="Ex: Verão, Inverno, Primavera..." />
           </div>
 
-          <div class="md:col-span-2 flex justify-end">
+          <div>
+            <label for="distancia" class="block text-sm font-medium">Distância (km)</label>
+            <input type="number" id="distancia" th:field="*{distancia}" step="0.1" min="0"
+                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                   placeholder="Ex: 5.2" />
+          </div>
+
+          <div>
+            <label for="duracaoEstimada" class="block text-sm font-medium">Duração (minutos)</label>
+            <input type="number" id="duracaoEstimada" th:field="*{duracaoEstimada}" min="0"
+                   class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
+                   placeholder="Ex: 120" />
+          </div>
+
+          <div class="md:col-span-2 flex justify-end gap-2">
+            <a th:href="@{/trilhas}" 
+               class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-400">
+              Cancelar
+            </a>
             <button type="submit"
                     class="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
               Cadastrar Trilha
