@@ -2,6 +2,7 @@ package br.edu.iff.ccc.projetoprogweb.controller;
 
 import br.edu.iff.ccc.projetoprogweb.entities.Trilha;
 import br.edu.iff.ccc.projetoprogweb.service.AvaliacaoService;
+import br.edu.iff.ccc.projetoprogweb.service.AvaliacaoService.AvaliacaoInvalidaException;
 import br.edu.iff.ccc.projetoprogweb.service.TrilhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -57,28 +58,20 @@ public class AvaliacaoController {
             @RequestParam(required = false) String comentario,
             Model model) {
         
-        
-        // Valida se a nota está no range permitido (1-5)
-        if (nota < 1 || nota > 5) {
-            // Adiciona mensagem de erro ao modelo
-            model.addAttribute("erro", "A nota deve estar entre 1 e 5");
+        try {
+            Trilha trilha = trilhaService.findById(trilhaId);
+            Long usuarioId = 1L;
             
-            // Recarrega dados da trilha 
+            avaliacaoService.criarAvaliacao(trilha, usuarioId, nota, comentario);
+            
+            return "redirect:/trilhas/" + trilhaId + "?avaliacaoSalva=true";
+            
+        } catch (AvaliacaoInvalidaException e) {
+            // Tratamento específico para erro de validação
+            model.addAttribute("erro", e.getMessage());
             model.addAttribute("trilha", trilhaService.findById(trilhaId));
-            
-            // Volta mostrando o erro
             return "avaliacoes/formulario";
         }
-        
-        // Busca o objeto Trilha completo (necessário para o relacionamento)
-        Trilha trilha = trilhaService.findById(trilhaId);
-        
-        // Define usuário demo 
-        Long usuarioId = 1L;
-        
-        avaliacaoService.criarAvaliacao(trilha, usuarioId, nota, comentario);
-        
-        return "redirect:/trilhas/" + trilhaId + "?avaliacaoSalva=true";
     }
 
     @GetMapping("/{id}/editar")

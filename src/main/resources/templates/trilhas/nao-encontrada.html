@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Trilha Não Encontrada')}"></head>
+<body class="bg-white" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+
+    <header class="flex items-center justify-between border-b border-[#f4f1f0] px-10 py-3">
+      <div class="flex items-center gap-3 text-[#181311]">
+        <div class="size-5">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z"
+              fill="currentColor"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold">Guia de Trilhas</h2>
+      </div>
+      <div class="flex gap-6">
+        <a class="text-sm font-medium" href="../trilhas">Trilhas</a>
+        <a class="text-sm font-medium" href="../trilhas/cadastro">Cadastrar</a>
+        <a class="text-sm font-medium" href="../trilhas/favoritas">Favoritas</a>
+      </div>
+    </header>
+
+    <main class="px-8 md:px-40 py-6">
+      <div class="max-w-[960px] mx-auto">
+
+        <div class="text-center mt-10 bg-gray-50 rounded-lg p-8">
+          <div class="text-red-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          
+          <h1 class="text-2xl font-bold text-gray-800 mb-4">Trilha Não Encontrada</h1>
+          
+          <p class="text-gray-600 mb-6" th:text="${errorMessage} ?: 'A trilha que você está procurando não foi encontrada.'">
+            A trilha que você está procurando não foi encontrada.
+          </p>
+          
+          <div class="flex justify-center gap-4">
+            <a href="/trilhas" 
+               class="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors">
+              Voltar para Trilhas
+            </a>
+            <a href="/trilhas/cadastro"
+               class="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+              Cadastrar Nova Trilha
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+</body>
+</html>

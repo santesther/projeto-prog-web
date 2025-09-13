@@ -1,6 +1,7 @@
 package br.edu.iff.ccc.projetoprogweb.controller;
 
 import br.edu.iff.ccc.projetoprogweb.entities.Trilha;
+import br.edu.iff.ccc.projetoprogweb.exception.TrilhaNaoEncontrada;
 import br.edu.iff.ccc.projetoprogweb.entities.NivelDificuldade;
 import br.edu.iff.ccc.projetoprogweb.service.TrilhaService;
 import br.edu.iff.ccc.projetoprogweb.config.AppConstants;
@@ -61,21 +62,14 @@ public class TrilhaController {
 
     @GetMapping("/{id}")
     public String viewTrilha(@PathVariable Long id, Model model) {
-        
-        // Busca a trilha pelo ID via service
-        Trilha trilha = trilhaService.findById(id);
-        
-        // tratamento de erros
-        if (trilha == null) {
-            return "redirect:/trilhas?error=trilha_nao_encontrada"; 
+        try {
+            Trilha trilha = trilhaService.findById(id);
+            model.addAttribute("trilha", trilha);
+            return "trilhas/detalhes";
+        } catch (TrilhaNaoEncontrada e) {
+            model.addAttribute("errorMessage", "Trilha com ID " + id + " não foi encontrada.");
+            return "trilhas/nao-encontrada";
         }
-        
-        // Prepara dados para a view
-        model.addAttribute("trilha", trilha);
-        model.addAttribute("avaliacoes", trilhaService.getAvaliacoesByTrilhaId(id));
-        model.addAttribute("mediaAvaliacoes", trilhaService.getMediaAvaliacoes(id)); 
-        
-        return "trilhas/detalhes"; 
     }
 
     @GetMapping("/cadastro")
