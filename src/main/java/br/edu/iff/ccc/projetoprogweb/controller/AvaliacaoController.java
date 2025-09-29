@@ -19,9 +19,9 @@ public class AvaliacaoController {
     
     /**
      * Service de trilhas necessário para:
-     * - Validar se trilha existe antes de criar avaliação
-     * - Buscar dados da trilha para exibir no formulário
-     * - Navegação entre trilhas e avaliações
+     Validar se trilha existe antes de criar avaliação
+     Buscar dados da trilha para exibir no formulário
+     Navegação entre trilhas e avaliações
      */
     @Autowired
     private TrilhaService trilhaService;
@@ -92,7 +92,7 @@ public class AvaliacaoController {
             Model model
     ) {
         
-        if (nota < 1 || nota > 5) {
+        if (nota < 1 || nota > 5) { //resolver esse erro de responsabilidade
             model.addAttribute("erro", "A nota deve estar entre 1 e 5");
             
             // Adiciona a avaliação atual
